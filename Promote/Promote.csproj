@@ -97,12 +97,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\PromosController.cs" />
+    <Compile Include="Events\RegisterEvents.cs" />
     <Compile Include="Filters\OutputProcessor.cs" />
     <Compile Include="Filters\Filter.cs" />
-    <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\Uninstaller.cs" />
     <Compile Include="Helpers\Installer.cs" />
-    <Compile Include="Helpers\ViewHelpers.cs" />
     <Compile Include="Models\PromoModel.cs" />
     <Compile Include="Models\PromoPoco.cs" />
     <Compile Include="Models\SettingsModel.cs" />

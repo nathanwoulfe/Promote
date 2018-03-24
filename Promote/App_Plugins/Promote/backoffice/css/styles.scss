@@ -25,7 +25,16 @@ $purple: #413659;
         }
 
         &__content {
+            padding-bottom:25px;
             margin-top:auto;           
+        }
+
+        &__image-wrapper {
+            margin-bottom:25px;
+        }
+
+        &__title {
+            margin-bottom:0;
         }
 
         &__buttons {

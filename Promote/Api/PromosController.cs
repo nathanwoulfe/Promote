@@ -45,7 +45,7 @@ namespace Promote.Api
         }
 
         /// <summary>
-        /// Save Promote settings object
+        /// Save Promote settings object - manages save and delete
         /// </summary>
         /// <returns></returns>
         [HttpPost]

@@ -6,8 +6,9 @@ namespace Promote.Services
     public interface IPromoService
     {
         IEnumerable<object> GetPromos();
-        IEnumerable<PromoModel> GetPromoModels();
+        IEnumerable<PromoModel> GetPromoModels(int nodeId, string contentTypeAlias = null);
 
         void SavePromos(IEnumerable<PromoModel> model);
+        void UpdateCache(IEnumerable<PromoModel> model = null);
     }
 }

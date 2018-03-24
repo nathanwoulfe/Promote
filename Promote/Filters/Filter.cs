@@ -26,24 +26,10 @@ namespace Promote.Filters
 
             // get the current requested node
             int pageId = UmbracoContext.Current.PageId.Value;
-            IPublishedContent node = UmbracoContext.Current.ContentCache.GetById(pageId);
+            string contentTypeAlias = UmbracoContext.Current.PublishedContentRequest?.PublishedContent?.DocumentTypeAlias;
 
-            if (null == node) return data;
-
-            // get existing modules, only continue if modules exist
-            PromoModel[] modules = _promoService.GetPromoModels() as PromoModel[] ?? new PromoModel[] {};
-
+            IEnumerable<PromoModel> modules = _promoService.GetPromoModels(pageId, contentTypeAlias);
             if (!modules.Any()) return data;
-
-            // valid modules are those where the node id matches this request, and applied to only this page
-            // or the content type alias matches, and the module is applied to all of type
-            IEnumerable<PromoModel> validModules = modules.Where(m => !m.Disabled 
-                && m.NodeId == pageId && m.ApplyTo == "this" 
-                || m.ContentTypeAlias == node.DocumentTypeAlias && m.ApplyTo == "all");
-
-            // only continue if valid modules exist
-            PromoModel[] promoModels = validModules as PromoModel[] ?? validModules.ToArray();
-            if (!promoModels.Any()) return data;
 
             var doc = new HtmlDocument();
             doc.LoadHtml(data);
@@ -52,7 +38,7 @@ namespace Promote.Filters
             HtmlNode body = root.SelectSingleNode("//body");
            
             // get the stored markup for each module and append to the document body, in an identifiable wrapper
-            foreach (PromoModel module in promoModels)
+            foreach (PromoModel module in modules)
             {
                 HtmlNode promoteElm = doc.CreateElement("promote-node");
                 promoteElm.SetAttributeValue("data-selector", module.Selector);
@@ -63,7 +49,7 @@ namespace Promote.Filters
 
                 // manage a-b split here - if current module has an a-b match, maybe use it
                 // a-b will use markup for either, but in the location of the current module, so styles/js need to work for both modules
-                PromoModel[] options = new[] {module, modules.FirstOrDefault(m => m.Guid == module.Ab) };
+                PromoModel[] options = {module, modules.FirstOrDefault(m => m.Guid == module.Ab) };
                 moduleDoc.LoadHtml(options.Last() != null ? options[Random.Next(options.Length)].Markup : module.Markup);
 
                 HtmlNode moduleMarkup = moduleDoc.DocumentNode;
