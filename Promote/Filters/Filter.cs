@@ -59,7 +59,12 @@ namespace Promote.Filters
             }
 
             // append script reference if modules exist for the page
-            HtmlNode scriptNode = HtmlNode.CreateNode("<script async src=\"/app_plugins/promote/backoffice/promote.frontend.js\"></script>");
+            // script is minified from the frontend.js file in the app_plugin folder
+            HtmlNode scriptNode = HtmlNode.CreateNode(
+                "<script>" +
+                "window.addEventListener(\"load\",function(){var e=document.querySelectorAll(\"promote-node\");e&&e.forEach(function(e){var r=e.dataset.attach,t=document.querySelector(e.dataset.selector);if(t&&r)switch(r){case\"first\":t.insertBefore(e.children[0],t.firstChild);break;case\"last\":t.appendChild(e.children[0]);break;case\"before\":t.parentNode.insertBefore(e.children[0],t);break;default:t.parentNode.insertBefore(e.children[0],t.nextSibling)}e.parentNode.removeChild(e)})});" +
+                "</script>"
+                );
             body.AppendChild(scriptNode);
 
             data = root.OuterHtml;
