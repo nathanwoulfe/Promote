@@ -1,0 +1,132 @@
+﻿<div ng-controller="promote.edit.controller as vm">
+    
+    <div class="control-group umb-control-group"  ng-if="vm.ab">
+        <div class="umb-el-wrap">
+            <div class="controls no-flex">
+                <small>Module is in A-B relationship with {{ vm.ab.name }}. <strong>Selector</strong> and <strong>Attach</strong> properties will be inherited from the related module.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Name</label>
+            <div class="controls">
+                <input type="text" ng-model="model.promo.name" no-dirty-check />
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Display on</label>
+            <div class="controls">
+                <button class="btn" ng-click="vm.setNode($event)">Select</button>
+                <p ng-bind="model.promo.node.name"></p>
+            </div>
+            <div class="controls no-flex">
+                <label>
+                    <input type="radio" ng-model="model.promo.applyTo" value="this" no-dirty-check>
+                    Just this page
+                </label><br/>
+                <label>
+                    <input type="radio" ng-model="model.promo.applyTo" value="all" no-dirty-check>
+                    All pages of this type ('{{ model.promo.contentTypeAlias }}')
+                </label>                
+            </div>
+        </div>
+    </div>
+    
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">A-B split</label>
+            <div class="controls">
+                <select ng-options="p.guid as p.name for p in model.promos | filter: vm.excludeCurrentPromo" ng-model="model.promo.ab" no-dirty-check>
+                    <option disabled selected>Select</option>
+                    <option value="">None</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Image</label>
+            <div class="controls">
+                <button class="btn" ng-click="vm.setImage($event)">Select</button>
+                <img ng-src="{{ model.promo.imageSrc }}" alt="" width="150" />
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Link</label>
+            <div class="controls">
+                <button class="btn" ng-click="vm.setLink($event)">Select</button>
+                <p ng-show="model.promo.link" ng-bind="model.promo.link.name"></p>
+            </div>
+            <div class="controls no-flex">
+                <input type="text" placeholder="Querystring (optional)" ng-model="model.promo.querystring" no-dirty-check />
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Selector</label>
+            <div class="controls">
+                <input type="text" ng-model="model.promo.selector" no-dirty-check />
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Attach</label>
+            <div class="controls no-flex">
+                <label>
+                    <input type="radio" ng-model="model.promo.attach" value="first" no-dirty-check>
+                    First child
+                </label><br />
+                <label>
+                    <input type="radio" ng-model="model.promo.attach" value="last" no-dirty-check>
+                    Last child
+                </label><br />
+                <label>
+                    <input type="radio" ng-model="model.promo.attach" value="before" no-dirty-check>
+                    Before
+                </label><br />
+                <label>
+                    <input type="radio" ng-model="model.promo.attach" value="after" no-dirty-check>
+                    After
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Additional CSS</label>
+            <div class="controls">
+                <textarea ng-model="model.promo.additionalCss" no-dirty-check></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="control-group umb-control-group">
+        <div class="umb-el-wrap">
+            <label class="control-label">Additional Javascript</label>
+            <div class="controls">
+                <textarea ng-model="model.promo.additionalJs" no-dirty-check></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <umb-overlay ng-if="vm.overlay.show"
+                 model="vm.overlay"
+                 view="vm.overlay.view"
+                 position="right">
+    </umb-overlay>
+
+</div>

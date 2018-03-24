@@ -1,0 +1,50 @@
+﻿<div ng-controller="promote.dashboard.controller as vm" class="promote">
+    <form name="contentForm"
+          ng-submit="save()"
+          novalidate
+          val-form-manager>
+
+        <umb-editor-view ng-if="!page.loading" footer="false">
+            <umb-editor-container class="form-horizontal">
+
+                <div class="umb-grid">
+                    <div class="umb-add-row">
+                        <a href="" class="iconBox" ng-click="vm.edit($event)">
+                            <i class="icon icon-add" title="Add promo definition"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="promo-row umb-dashboard-grid">
+                    <div class="post-card promo-card" ng-class="{ 'disabled' : p.disabled }" ng-repeat="p in vm.promos track by $index">
+                        <div class="post-card__image-wrapper">
+                            <img class="post-card__image" ng-src="{{ p.imageSrc }}" alt="">
+                        </div>
+                        <div class="post-card__content">
+                            <div class="post-card__buttons">
+                                <button class="btn btn-success" ng-click="vm.edit($event, $index)">
+                                    <i class="icon icon-edit"></i>
+                                </button>
+                                <button class="btn post-card__disable" ng-click="vm.disable($event, $index)">
+                                    <i class="icon icon-power"></i>
+                                </button>
+                                <button class="btn post-card__delete" ng-click="vm.remove($event, $index)">
+                                    <i class="icon icon-delete"></i>
+                                </button>
+                            </div>
+                            <div class="post-card__title" ng-bind="p.name"></div>
+                            <div class="post-card__teaser"></div>
+                        </div>
+                    </div>   
+                </div>
+
+            </umb-editor-container>
+        </umb-editor-view>
+    </form>
+
+    <umb-overlay ng-if="vm.overlay.show"
+                 model="vm.overlay"
+                 view="vm.overlay.view"
+                 position="right">
+    </umb-overlay>
+</div>

@@ -1,0 +1,10 @@
+﻿{
+    javascript: [
+        '~/App_Plugins/promote/backoffice/promote.service.js',
+        '~/App_Plugins/promote/backoffice/controllers/promote.dashboard.controller.js',
+        '~/App_Plugins/promote/backoffice/controllers/promote.edit.controller.js'
+    ],
+	css: [
+		'~/App_Plugins/promote/backoffice/css/styles.min.css'
+	]
+}
