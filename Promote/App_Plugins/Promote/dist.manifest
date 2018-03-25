@@ -1,0 +1,8 @@
+﻿{   
+    javascript: [
+        '~/App_Plugins/promote/backoffice/js/promote.js'
+    ],
+    css: [
+		'~/App_Plugins/promote/backoffice/css/styles.min.css'
+    ]
+}
