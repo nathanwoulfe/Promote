@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using Promote.Models;
+﻿using Promote.Models;
 using Promote.Repositories;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Caching;
 
 namespace Promote.Services
 {

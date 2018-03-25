@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Text;
-using System.Threading.Tasks;
-using Promote.Models;
-using Promote.Services;
+﻿using Promote.Services;
 using Umbraco.Core;
 
 namespace Promote.Events

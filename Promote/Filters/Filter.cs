@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using Promote.Models;
 using Promote.Services;
-using Umbraco.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Web;
 
 namespace Promote.Filters
