@@ -42,12 +42,28 @@
         concat: {
             dist: {
                 src: [
-                  '<%= basePath %>/**/*.js'
+                    '<%= basePath %>/**/*.js',
+                    '!**/promote.frontend.js',
                 ],
-                dest: '<%= dest %>/<%= basePath %>/backoffice/js/promote.js',
+                dest: '<%= basePath %>/backoffice/promote.es6',
                 nonull: true,
                 options: {
                     banner: '/<%= banner %>/\n\n'
+                }
+            }
+        },
+
+        browserify: {
+            dist: {
+                files: {
+                    // destination for transpiled js : source js
+                    '<%= dest %>/<%= basePath %>/backoffice/js/promote.js': '<%= basePath %>/backoffice/promote.es6'
+                },
+                options: {
+                    transform: [['babelify', { presets: 'es2015' }]],
+                    browserifyOptions: {
+                        debug: false
+                    }
                 }
             }
         },
@@ -103,12 +119,12 @@
                 files: ['<%= basePath %>/**/*.html'],
                 tasks: ['copy:views']
             },
-            
+
             config: {
                 files: ['<%= basePath %>/package.manifest'],
                 tasks: ['copy:config']
             },
-            
+
             lang: {
                 files: ['<%= basePath %>/lang/**'],
                 tasks: ['copy:lang']
@@ -254,6 +270,7 @@
                     latedef: false,
                     newcap: false,
                     noarg: true,
+                    esversion: 6,
                     sub: true,
                     boss: true,
                     eqnull: true,
@@ -264,13 +281,12 @@
                     smarttabs: true,
                     globals: {},
                     force: true,
-                    ignores:['**/highcharts.js', '**/exporting.js']
                 }
             }
         }
     });
 
-    grunt.registerTask('default', ['jshint', 'concat', 'sass', 'cssmin', 'copy:config', 'copy:html', 'copy:lang']);
+    grunt.registerTask('default', ['jshint', 'concat', 'browserify', 'sass', 'cssmin', 'copy:config', 'copy:html', 'copy:lang']);
     grunt.registerTask('nuget', ['clean', 'default', 'copy:nuget', 'template:nuspec', 'mkdir:pkg', 'nugetpack']);
     grunt.registerTask('package', ['clean', 'default', 'copy:umbraco', 'copy:umbracoBin', 'mkdir:pkg', 'umbracoPackage']);
 

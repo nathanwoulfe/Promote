@@ -33,6 +33,7 @@
                                 </button>
                             </div>
                             <div class="post-card__title" ng-bind="p.name"></div>
+                            <div class="post-card__teaser" ng-show="vm.hasAb(p)">A-B: {{ vm.abPair(p.ab) }}</div>
                         </div>
                     </div>   
                 </div>

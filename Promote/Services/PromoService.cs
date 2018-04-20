@@ -1,4 +1,5 @@
-﻿using Promote.Models;
+﻿using System;
+using Promote.Models;
 using Promote.Repositories;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,10 @@ using System.Web;
 
 namespace Promote.Services
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class PromoService : IPromoService
     {
         private readonly IPocoRepository _repo;
@@ -33,7 +38,7 @@ namespace Promote.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<PromoModel> GetPromoModels(int nodeId, string contentTypeAlias = null)
+        public List<PromoModel> GetValidPromos(int nodeId, string contentTypeAlias = null)
         {
             List<PromoModel> model = new List<PromoModel>();
 
@@ -42,6 +47,7 @@ namespace Promote.Services
             foreach (DictionaryEntry item in HttpContext.Current.Cache)
             {
                 string key = item.Key.ToString();
+
                 if (key.StartsWith("promotemodule_") && key.Contains($"this_{nodeId}") || key.Contains($"all_{contentTypeAlias}"))
                 {
                     var val = item.Value as PromoModel;
@@ -53,6 +59,26 @@ namespace Promote.Services
             }
 
             return model;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public PromoModel GetBForA(Guid guid)
+        {
+            foreach (DictionaryEntry item in HttpContext.Current.Cache)
+            {
+                string key = item.Key.ToString();
+
+                if (key.StartsWith("promotemodule_") && key.Contains($"_{guid}"))
+                {
+                    return item.Value as PromoModel;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

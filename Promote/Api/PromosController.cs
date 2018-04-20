@@ -8,7 +8,7 @@ using Umbraco.Web.WebApi;
 
 namespace Promote.Api
 {
-    [RoutePrefix("umbraco/backoffice/api/promote/promos")]
+    // /umbraco/backoffice/api/promote/promos
     public class PromosController : UmbracoAuthorizedApiController
     {
         private readonly IPromoService _promoService;
@@ -23,7 +23,6 @@ namespace Promote.Api
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("get")]
         public IHttpActionResult GetPromos()
         {
             try
@@ -49,7 +48,6 @@ namespace Promote.Api
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("save")]
         public IHttpActionResult SavePromos(List<PromoModel> promos)
         {
             try

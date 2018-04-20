@@ -27,7 +27,7 @@ namespace Promote.Filters
             int pageId = UmbracoContext.Current.PageId.Value;
             string contentTypeAlias = UmbracoContext.Current.PublishedContentRequest?.PublishedContent?.DocumentTypeAlias;
 
-            IEnumerable<PromoModel> modules = _promoService.GetPromoModels(pageId, contentTypeAlias);
+            List<PromoModel> modules = _promoService.GetValidPromos(pageId, contentTypeAlias);
             if (!modules.Any()) return data;
 
             var doc = new HtmlDocument();
@@ -47,8 +47,8 @@ namespace Promote.Filters
                 var moduleDoc = new HtmlDocument();
 
                 // manage a-b split here - if current module has an a-b match, maybe use it
-                // a-b will use markup for either, but in the location of the current module, so styles/js need to work for both modules
-                PromoModel[] options = {module, modules.FirstOrDefault(m => m.Guid == module.Ab) };
+                // a-b will use markup for either, but in the location of the current module, so styles/js need to work for both modules               
+                PromoModel[] options = {module, _promoService.GetBForA(module.Ab) };
                 moduleDoc.LoadHtml(options.Last() != null ? options[Random.Next(options.Length)].Markup : module.Markup);
 
                 HtmlNode moduleMarkup = moduleDoc.DocumentNode;

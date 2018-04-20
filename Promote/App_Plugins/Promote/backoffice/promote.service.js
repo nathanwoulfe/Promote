@@ -1,34 +1,50 @@
 ﻿(function () {
-  'use strict';
+    'use strict';
 
-  function promoteService($http, umbRequestHelper) {
+    function promoteService($http, umbRequestHelper) {
 
-    var urlBase = '/umbraco/backoffice/api/promote/promos/';
+        var urlBase = '/umbraco/backoffice/api/promos/';
 
-    var service = {
-      request: function (method, url, data) {
-        return umbRequestHelper.resourcePromise( 
-            method === 'GET' ?
-                $http.get(url) :
-                $http.post(url, data),
-            'Something broke'
-        );
-      },
-      getByUdi: function (udi) {
-        return this.request('GET', urlBase + 'getByUdi?udi=' + udi); 
-      },
-      getPromos: function () {
-        return this.request('GET', urlBase + 'get');
-      },
-      savePromos: function (promos) {
-        return this.request('POST', urlBase + 'save', promos);
-      },
-    };
+        function request(method, url, data) {
+            return umbRequestHelper.resourcePromise(
+                method === 'GET' ?
+                    $http.get(url) :
+                    $http.post(url, data),
+                'Something broke'
+            );
+        }
 
-    return service;
+        const service = {
 
-  }
+            getPromos: () => request('GET', urlBase + 'getpromos'),
 
-  angular.module('umbraco').service('promoteService', ['$http', 'umbRequestHelper', promoteService]);
+            savePromos: promos => request('POST', urlBase + 'savepromos', promos),
+
+            getGuid: () => {
+                function p8(s) {
+                    const p = (Math.random().toString(16) + '000000000').substr(2, 8);
+                    return s ? `-${p.substr(0, 4)}-${p.substr(4, 4)}` : p;
+                }
+                return p8() + p8(true) + p8(true) + p8();
+            },
+
+            isGuid: g => g !== '00000000-0000-0000-0000-000000000000',
+
+            generateMarkup: p => {
+                return `<div style="font-size:0" class="promote-item promote-item--${p.name.toLowerCase().replace(' ', '')}">
+                        <a href="${p.link.url}${p.querystring || ''}">
+                            <img src="${p.imageSrc}" alt="" />
+                        </a>
+                        <style>${p.additionalCss}</style>
+                        ${p.additionalJs ? `<script>${p.additionalJs}</script>` : ''}
+                    </div>`;
+            }
+        };
+
+        return service;
+
+    }
+
+    angular.module('umbraco').service('promoteService', ['$http', 'umbRequestHelper', promoteService]);
 
 }());

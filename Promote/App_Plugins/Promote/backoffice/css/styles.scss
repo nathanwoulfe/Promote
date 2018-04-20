@@ -19,7 +19,7 @@ $purple: #413659;
         }
     }
 
-    .post-card {
+    div.post-card {
         &.disabled {
             opacity:.5;
         }
@@ -33,7 +33,7 @@ $purple: #413659;
             margin-bottom:25px;
         }
 
-        &__title {
+        &__title, &__teaser {
             margin-bottom:0;
         }
 

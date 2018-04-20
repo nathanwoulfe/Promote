@@ -81,13 +81,14 @@
     <Compile Include="Startup\RegisterDatabaseTable.cs" />
     <Compile Include="Startup\UmbracoStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Startup\WebApiConfig.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".babelrc" />
     <None Include="app.config" />
     <None Include="App_Plugins\Promote\backoffice\css\styles.min.css.map" />
     <None Include="App_Plugins\Promote\backoffice\css\styles.scss" />
     <None Include="App_Plugins\Promote\backoffice\promos.json" />
+    <None Include="App_Plugins\Promote\dist.manifest" />
     <None Include="App_Plugins\Promote\package.manifest" />
     <None Include="package.json" />
     <None Include="packages.config" />
