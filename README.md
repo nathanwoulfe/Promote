@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ey2un6spnk655g4y?svg=true)](https://ci.appveyor.com/project/nathanwoulfe/promote)
+
 # Promote - Ad modules for Umbraco
 
 Promote is a backoffice extension for creating reusable promo modules, which can then be injected into pages without content updates or adding properties to content types.
