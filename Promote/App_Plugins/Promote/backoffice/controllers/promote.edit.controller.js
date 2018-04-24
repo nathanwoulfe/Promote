@@ -3,42 +3,54 @@
 
     function ctrl($scope, contentResource, mediaResource, promoteService) {
 
-        var vm = this;
-        var cssClass = '.promote-item--';
+        const cssBase = '.promote-item--';
+
+        $scope.model.mediaPicker = {
+            label: 'Image',
+            alias: 'image',
+            editor: 'Umbraco.MediaPicker',
+            view: 'mediapicker',
+            value: $scope.model.promo.imageId ? $scope.model.promo.imageId.toString() : '',
+            config: {
+                idType: 'int',
+                multiPicker: '0',
+                onlyImages: '1'
+            }
+        };
+
+        $scope.model.displayOn = {
+            label: 'Display on',
+            alias: 'displayOn',
+            editor: 'Umbraco.ContentPicker',
+            view: 'contentpicker',
+            value: $scope.model.promo.nodeId ? $scope.model.promo.nodeId.toString() : '',
+            config: {
+                multiPicker: '0',
+                maxNumber: 1
+            }
+        };
+
+        $scope.model.link = {
+            label: 'Link',
+            alias: 'link',
+            editor: 'Umbraco.ContentPicker',
+            view: 'contentpicker',
+            value: $scope.model.promo.linkId ? $scope.model.promo.linkId.toString() : '',
+            config: {
+                multiPicker: '0',
+                maxNumber: 1
+            }
+        };
 
         if (!$scope.model.promo.guid) {
             $scope.model.promo.guid = promoteService.getGuid();
-        }
-
-        if (!$scope.model.promo.image && $scope.model.promo.imageId) {
-            mediaResource.getById($scope.model.promo.imageId)
-                .then(resp => {
-                    $scope.model.promo.image = resp;
-                    $scope.model.promo.imageSrc = resp.mediaLink;
-                });
-        }
-
-        if (!$scope.model.promo.link && $scope.model.promo.linkId) {
-            contentResource.getById($scope.model.promo.linkId)
-                .then(resp => {
-                    $scope.model.promo.link = resp;
-                    getUrlForLink();
-                });
-        }
-
-        if ($scope.model.promo.nodeId) {
-            contentResource.getById($scope.model.promo.nodeId)
-                .then(resp => {
-                    $scope.model.promo.node = resp;
-                    $scope.model.promo.contentTypeAlias = resp.contentTypeAlias;
-                });
         }
 
         // check if promo is in the b in an a-b
         const inAb = $scope.model.promos.filter(v => v.ab === $scope.model.promo.guid);
 
         if (inAb) {
-            vm.ab = inAb[0];
+            this.ab = inAb[0];
         }
 
         /**
@@ -46,11 +58,11 @@
          */
         $scope.$watch('model.promo.name', (newVal, oldVal) => {
             if (newVal && newVal !== oldVal) {
-                const className = cssClass + newVal.toLowerCase().replace(' ', '');
+                const className = cssBase + newVal.toLowerCase().replace(' ', '');
 
                 // update css if name changes, set if new
                 if ($scope.model.promo.additionalCss) {
-                    const oldClassName = cssClass + oldVal.toLowerCase().replace(' ', '');
+                    const oldClassName = cssBase + oldVal.toLowerCase().replace(' ', '');
                     const regex = new RegExp(oldClassName, 'g');
 
                     $scope.model.promo.additionalCss = $scope.model.promo.additionalCss.replace(regex, className);
@@ -61,114 +73,11 @@
         });
 
         /**
-         * Get the URL of the selected link target
-         * @returns {} 
-         */
-        function getUrlForLink() {
-            contentResource.getNiceUrl($scope.model.promo.link.id)
-                .then(resp => {
-                    $scope.model.promo.link.url = resp;
-                });
-        }
-
-        /**
          * Simple filter for A-B select element, to prevent A-B testing with self
          * @param {} o 
          * @returns {} 
          */
-        function excludeCurrentPromo(o) {
-            return o.guid !== $scope.model.promo.guid;
-        }
-
-
-        // OVERLAYS //
-
-        function closeOverlay() {
-            vm.overlay.show = false;
-            vm.overlay = null;
-        }
-
-        /**
-        * 
-        * @param {} $event 
-        * @returns {} 
-        */
-        function setImage($event) {
-            $event.preventDefault();
-
-            vm.overlay = {
-                view: 'mediapicker',
-                show: true,
-                multiPicker: false,
-                submit: model => {
-                    $scope.model.promo.image = model.selectedImages[0];
-                    $scope.model.promo.imageSrc = model.selectedImages[0].file;
-                    closeOverlay();
-                },
-                close: () => {
-                    closeOverlay();
-                }
-            };
-        }
-
-        /**
-         * 
-         * @param {} $event 
-         * @returns {} 
-         */
-        function setLink($event) {
-            $event.preventDefault();
-
-            vm.overlay = {
-                view: 'contentpicker',
-                show: true,
-                multiPicker: false,
-                submit: resp => {
-                    $scope.model.promo.link = resp.selection[0];
-                    getUrlForLink();
-                    closeOverlay();
-                },
-                close: () => {
-                    closeOverlay();
-                }
-            };
-        }
-
-        /**
-         * 
-         * @param {} $event 
-         * @returns {} 
-         */
-        function setNode($event) {
-            $event.preventDefault();
-
-            vm.overlay = {
-                view: 'contentpicker',
-                show: true,
-                multiPicker: false,
-                submit: resp => {
-                    $scope.model.promo.node = resp.selection[0];
-                    $scope.model.promo.nodeId = resp.selection[0].id;
-                    $scope.model.promo.contentTypeAlias = resp.selection[0].metaData.ContentTypeAlias;
-                    $scope.model.promo.applyTo = 'this';
-
-                    closeOverlay();
-                },
-                close: () => {
-                    closeOverlay();
-                }
-            };
-        }
-
-        /**
-         * The public API
-         */
-        angular.extend(vm, {
-            setImage: setImage,
-            setLink: setLink,
-            setNode: setNode,
-            excludeCurrentPromo: excludeCurrentPromo
-        });
+        this.excludeCurrentPromo = o => o.guid !== $scope.model.promo.guid;
 
     }
 

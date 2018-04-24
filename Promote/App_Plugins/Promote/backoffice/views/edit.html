@@ -16,14 +16,13 @@
             </div>
         </div>
     </div>
+    
+    <umb-property property="model.displayOn" class="run-on">
+        <umb-property-editor model="model.displayOn" /> 
+    </umb-property>
 
     <div class="control-group umb-control-group">
         <div class="umb-el-wrap">
-            <label class="control-label">Display on</label>
-            <div class="controls">
-                <button class="btn" ng-click="vm.setNode($event)">Select</button>
-                <p ng-bind="model.promo.node.name"></p>
-            </div>
             <div class="controls no-flex">
                 <label>
                     <input type="radio" ng-model="model.promo.applyTo" value="this" no-dirty-check>
@@ -31,7 +30,7 @@
                 </label><br/>
                 <label>
                     <input type="radio" ng-model="model.promo.applyTo" value="all" no-dirty-check>
-                    All pages of this type ('{{ model.promo.contentTypeAlias }}')
+                    All pages of this type
                 </label>                
             </div>
         </div>
@@ -48,26 +47,20 @@
             </div>
         </div>
     </div>
+    
+    <umb-property property="model.mediaPicker">
+        <umb-property-editor model="model.mediaPicker" />
+    </umb-property>
+    
+    <umb-property property="model.link">
+        <umb-property-editor model="model.link" />
+    </umb-property>
 
     <div class="control-group umb-control-group">
         <div class="umb-el-wrap">
-            <label class="control-label">Image</label>
-            <div class="controls">
-                <button class="btn" ng-click="vm.setImage($event)">Select</button>
-                <img ng-src="{{ model.promo.imageSrc }}" alt="" width="150" />
-            </div>
-        </div>
-    </div>
-
-    <div class="control-group umb-control-group">
-        <div class="umb-el-wrap">
-            <label class="control-label">Link</label>
-            <div class="controls">
-                <button class="btn" ng-click="vm.setLink($event)">Select</button>
-                <p ng-show="model.promo.link" ng-bind="model.promo.link.name"></p>
-            </div>
+            <label class="control-label">Querystring</label>
             <div class="controls no-flex">
-                <input type="text" placeholder="Querystring (optional)" ng-model="model.promo.querystring" no-dirty-check />
+                <input type="text" placeholder="optional" ng-model="model.promo.querystring" no-dirty-check />
             </div>
         </div>
     </div>
@@ -122,11 +115,5 @@
             </div>
         </div>
     </div>
-    
-    <umb-overlay ng-if="vm.overlay.show"
-                 model="vm.overlay"
-                 view="vm.overlay.view"
-                 position="right">
-    </umb-overlay>
 
 </div>

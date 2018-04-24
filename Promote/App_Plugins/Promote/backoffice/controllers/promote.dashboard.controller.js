@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    function ctrl($scope, notificationsService, promoteService) {
+    function ctrl($q, $scope, entityResource, contentResource, notificationsService, promoteService) {
 
         var vm = this;
 
@@ -10,39 +10,22 @@
          */
         promoteService.getPromos()
             .then(resp => {
-                vm.promos = resp.data || [];
+                this.promos = resp.data || [];
             });
+
+        const closeOverlay = () => {
+            this.overlay.show = false;
+            this.overlay = null;
+        }
 
         /**
          * Save the new promo
          * @param {} $event 
          * @returns {} 
          */
-        function save(hideNotification) {
-            if (vm.newPromo && Object.keys(vm.newPromo).length) {
-                vm.promos.push({
-                    guid: vm.newPromo.guid,
-                    name: vm.newPromo.name,
-                    nodeId: vm.newPromo.node ? vm.newPromo.node.id : null,
-                    contentTypeAlias: vm.newPromo.contentTypeAlias,
-                    additionalCss: vm.newPromo.additionalCss,
-                    additionalJs: vm.newPromo.additionalJs,
-                    applyTo: vm.newPromo.applyTo,
-                    selector: vm.newPromo.selector,
-                    attach: vm.newPromo.attach,
-                    linkUrl: vm.newPromo.link.url,
-                    linkId: vm.newPromo.link.id,
-                    imageSrc: vm.newPromo.imageSrc,
-                    imageId: vm.newPromo.image.id,
-                    markup: promoteService.generateMarkup(vm.newPromo),
-                    querystring: vm.newPromo.querystring,
-                    disabled: false
-                });
-            }
-            promoteService.savePromos(vm.promos)
+        const save = hideNotification => {
+            promoteService.savePromos(this.promos)
                 .then(() => {
-                    vm.newPromo = {};
-
                     if (!hideNotification) {
                         notificationsService.success('SUCCESS', 'Promo saved');
                     }
@@ -59,10 +42,10 @@
          * @param {} i 
          * @returns {} 
          */
-        function disable($event, i) {
+        this.disable = ($event, i) => {
             $event.preventDefault();
 
-            vm.promos[i].disabled = !vm.promos[i].disabled;
+            this.promos[i].disabled = !this.promos[i].disabled;
             save(true);
         }
 
@@ -72,11 +55,11 @@
          * @param {} i 
          * @returns {} 
          */
-        function remove($event, i) {
+        this.remove = ($event, i) => {
             $event.preventDefault();
 
             if (confirm('Are you sure?')) {
-                vm.promos.splice(i, 1);
+                this.promos.splice(i, 1);
                 save();
             }
         }
@@ -87,57 +70,59 @@
          * @param {} index 
          * @returns {} 
          */
-        function edit($event, index) {
+        this.edit = ($event, index) => {
             $event.preventDefault();
 
-            vm.newPromo = {};
-            vm.overlay = {
+            this.overlay = {
                 view: '../app_plugins/promote/backoffice/views/edit.html',
                 show: true,
                 title: index !== undefined ? 'Edit module' : 'Add module',
-                promos: vm.promos,
-                promo: index !== undefined ? vm.promos[index] : {},
+                promos: this.promos,
+                promo: index !== undefined ? this.promos[index] : {},
                 submit: model => {
-                    vm.overlay.show = false;
-                    vm.overlay = null;
+                    closeOverlay();
 
-                    if (index !== undefined) {
-                        model.promo.markup = promoteService.generateMarkup(model.promo);
-                        vm.promos[index] = model.promo;
-                    } else {
-                        vm.newPromo = model.promo;
-                    }
-                    save();
+                    const mediaQuery = entityResource.getById(model.mediaPicker.value, 'Media');
+                    const linkQuery = contentResource.getById(model.link.value);
+
+                    model.promo.nodeId = model.displayOn.value.toString();
+                    model.promo.imageId = model.mediaPicker.value.toString();
+                    model.promo.linkId = model.link.value.toString();
+
+                    $q.all([mediaQuery, linkQuery])
+                        .then(resp => {
+                            const mediaResponse = resp[0];
+                            const linkResponse = resp[1];
+
+                            model.promo.contentType = linkResponse.contentTypeAlias;
+                            model.promo.linkUrl = linkResponse.urls[0];
+
+                            model.promo.imageSrc = mediaResponse.metaData.umbracoFile.Value;
+
+                            if (index !== undefined) {
+                                model.promo.markup = promoteService.generateMarkup(model.promo);
+                                this.promos[index] = model.promo;
+                            } else {
+                                this.promos.push(model.promo);
+                            }
+
+                            save();
+                        });
                 },
                 close: () => {
-                    vm.overlay.show = false;
-                    vm.overlay = null;
+                    closeOverlay();
                 }
             };
         }
 
-        function hasAb(p) {
-            return promoteService.isGuid(p.ab);
-        }
+        this.hasAb = p => promoteService.isGuid(p.ab);
 
-        function abPair(guid) {
-            const pair = vm.promos.filter(p => p.guid === guid)[0];
+        this.abPair = guid => {
+            const pair = this.promos.filter(p => p.guid === guid)[0];
             return pair ? pair.name : null;
         }
-
-        /**
-         * The public API
-         */
-        angular.extend(vm, {
-            edit: edit,
-            disable: disable,
-            remove: remove,
-            hasAb: hasAb,
-            abPair: abPair
-        });
-
     }
 
-    angular.module('umbraco').controller('promote.dashboard.controller', ['$scope', 'notificationsService', 'promoteService', ctrl]);
+    angular.module('umbraco').controller('promote.dashboard.controller', ['$q', '$scope', 'entityResource', 'contentResource', 'notificationsService', 'promoteService', ctrl]);
 
 }());
