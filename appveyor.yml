@@ -1,5 +1,5 @@
 # version format
-version: 0.1.0.{build}
+version: 0.2.0.{build}
 
 image: Visual Studio 2017
 
@@ -42,9 +42,9 @@ deploy:
         appveyor_repo_tag: true      
     
   - provider: GitHub
-    tag: v0.1.0
-    release: Release 0.1.0
-    description: ''
+    tag: v0.2.0
+    release: Release 0.2.0
+    description: 'Simplifying creation of new item - using native media/content picker, es6 updates throughout'
     force_update: true
     auth_token:
         secure: Otbl8p8qCwciDqJgSWCyN0Arfs5XS1CwiHcK+r0F6uz9Rxt4gzBFvlc3cjPV3NxR
